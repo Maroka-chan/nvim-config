@@ -22,6 +22,45 @@ local lua_settings = {
   },
 }
 
+local rust_settings = {
+  ["rust-analyzer"] = {
+    imports = {
+      granularity = {
+        group = "module",
+      },
+      prefix = "self",
+    },
+    cargo = {
+      buildScripts = {
+        enable = true,
+      },
+      allFeatures = true,
+    },
+    procMacro = {
+      enable = true
+    },
+  }
+}
+
+local nixd_settings = {
+  nixd = {
+    nixpkgs = {
+      expr = "import <nixpkgs> { }",
+    },
+    formatting = {
+      command = { "nixpkgs-fmt" },
+    },
+    options = {
+      nixos = {
+        expr = '(builtins.getFlake ("git+file:///home/maroka/Documents/NixOS-config")).nixosConfigurations.kanan.options',
+      },
+      home_manager = {
+        expr = '(builtins.getFlake ("git+file:///home/maroka/Documents/NixOS-config")).homeConfigurations."maroka@kanan".options',
+      },
+    },
+  },
+}
+
 -- Language Server Protocols to Enable
 local LSP_servers = {
   { 'lua_ls', settings = lua_settings  },
@@ -34,46 +73,19 @@ local LSP_servers = {
   { 'texlab' },
   { 'clangd' },
   { 'ccls' },
+  { 'rust_analyzer', settings = rust_settings },
   { 'nil_ls' },
+  --{ 'nixd', settings = nixd_settings },
+  { 'ts_ls' }
 }
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lsp_defaults = lspconfig.util.default_config
 lsp_defaults.capabilities = vim.tbl_deep_extend('force', lsp_defaults.capabilities, capabilities)
 
-lspconfig.rust_analyzer.setup({
-  -- cmd = vim.lsp.rpc.connect("127.0.0.1", 27631),
-  -- init_options = {
-  --   lspMux = {
-  --     version = "1",
-  --     method = "connect",
-  --     server = "rust-analyzer",
-  --   },
-  -- },
-  settings = {
-    ["rust-analyzer"] = {
-      imports = {
-        granularity = {
-          group = "module",
-        },
-        prefix = "self",
-      },
-      cargo = {
-        buildScripts = {
-          enable = true,
-        },
-        allFeatures = true,
-      },
-      procMacro = {
-        enable = true
-      },
-    }
-  }
-})
-
 for _, lsp in ipairs(LSP_servers) do
   local conf = {
-    capabilities = capabilities
+    capabilities = capabilities,
   }
 
   if lsp.settings ~= nil then

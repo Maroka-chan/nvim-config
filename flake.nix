@@ -36,6 +36,8 @@
               nvim-scrollbar        # Scrollbar
               nvim-web-devicons     # Icons
               markdown-preview-nvim # Markdown Preview
+              toggleterm-nvim
+
 
               # Fuzzy Finder
               telescope-nvim

@@ -27,7 +27,7 @@
             start = [
               plugin_config
 
-              citruszest-nvim       # Theme
+              kanagawa-nvim         # Theme
 
               nvim-tree-lua         # File Tree
               lualine-nvim          # Status Line

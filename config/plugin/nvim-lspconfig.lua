@@ -72,11 +72,10 @@ local LSP_servers = {
   { 'pyright' },
   { 'texlab' },
   { 'clangd' },
-  { 'ccls' },
+  --{ 'ccls' },
   { 'rust_analyzer', settings = rust_settings },
   { 'nil_ls' },
   --{ 'nixd', settings = nixd_settings },
-  { 'ts_ls' }
 }
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())

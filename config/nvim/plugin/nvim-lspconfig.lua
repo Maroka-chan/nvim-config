@@ -42,25 +42,6 @@ local rust_settings = {
   }
 }
 
-local nixd_settings = {
-  nixd = {
-    nixpkgs = {
-      expr = "import <nixpkgs> { }",
-    },
-    formatting = {
-      command = { "nixpkgs-fmt" },
-    },
-    options = {
-      nixos = {
-        expr = '(builtins.getFlake ("git+file:///home/maroka/Documents/NixOS-config")).nixosConfigurations.kanan.options',
-      },
-      home_manager = {
-        expr = '(builtins.getFlake ("git+file:///home/maroka/Documents/NixOS-config")).homeConfigurations."maroka@kanan".options',
-      },
-    },
-  },
-}
-
 -- Language Server Protocols to Enable
 local LSP_servers = {
   { 'lua_ls', settings = lua_settings  },
@@ -72,20 +53,13 @@ local LSP_servers = {
   { 'pyright' },
   { 'texlab' },
   { 'clangd' },
-  --{ 'ccls' },
   { 'rust_analyzer', settings = rust_settings },
   { 'nil_ls' },
-  --{ 'nixd', settings = nixd_settings },
 }
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-local lsp_defaults = lspconfig.util.default_config
-lsp_defaults.capabilities = vim.tbl_deep_extend('force', lsp_defaults.capabilities, capabilities)
-
 for _, lsp in ipairs(LSP_servers) do
-  local conf = {
-    capabilities = capabilities,
-  }
+  local conf = {}
+  conf.capabilities = require('blink.cmp').get_lsp_capabilities(conf.capabilities)
 
   if lsp.settings ~= nil then
     conf.settings = lsp.settings

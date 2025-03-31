@@ -27,16 +27,17 @@
     nvim-lspconfig
     
     # Completion
-    nvim-cmp
-    cmp-nvim-lsp
-    cmp-nvim-lsp-signature-help
-    cmp-nvim-lsp-document-symbol
-    cmp-path
-    cmp-buffer
-    cmp-cmdline
-    cmp_luasnip
-    cmp-rg
-    cmp-omni
+    #nvim-cmp
+    #cmp-nvim-lsp
+    #cmp-nvim-lsp-signature-help
+    #cmp-nvim-lsp-document-symbol
+    #cmp-path
+    #cmp-buffer
+    #cmp-cmdline
+    #cmp_luasnip
+    #cmp-rg
+    #cmp-omni
+    blink-cmp
     nvim-autopairs
 
     # Snippets

@@ -13,6 +13,7 @@
 
     nvim-tree-lua         # File Tree
     lualine-nvim          # Status Line
+    plenary-nvim          # Lua Helper Functions
     nvim-hlslens          # Match Enhancement
     nvim-scrollbar        # Scrollbar
     nvim-web-devicons     # Icons

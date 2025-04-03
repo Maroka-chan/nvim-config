@@ -15,7 +15,10 @@ blink_cmp.setup({
   -- (Default) Only show the documentation popup when manually triggered
   completion = {
     documentation = { auto_show = false },
-    ghost_text = { enabled = true },
+    ghost_text = {
+      enabled = true,
+      show_without_selection = true
+    },
     list = { selection = { preselect = false } },
     menu = {
       draw = { columns = { { "label", "label_description", gap = 1 }, { "kind_icon", gap = 1, "kind" } } },

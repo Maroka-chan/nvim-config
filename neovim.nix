@@ -4,6 +4,7 @@
   makeWrapper,
   runCommandLocal,
   vimPlugins,
+  pkgs,
   lib,
 }: let
   packageName = "mypackage";
@@ -11,7 +12,7 @@
   startPlugins = with vimPlugins; [
     kanagawa-nvim         # Theme
 
-    nvim-tree-lua         # File Tree
+    #nvim-tree-lua         # File Tree
     lualine-nvim          # Status Line
     plenary-nvim          # Lua Helper Functions
     nvim-hlslens          # Match Enhancement
@@ -20,6 +21,9 @@
     markdown-preview-nvim # Markdown Preview
     toggleterm-nvim
 
+    yazi-nvim
+    snacks-nvim
+    
     # Fuzzy Finder
     telescope-nvim
     telescope-fzf-native-nvim
@@ -39,7 +43,8 @@
     #cmp-rg
     #cmp-omni
     blink-cmp
-    nvim-autopairs
+    blink-pairs
+    #nvim-autopairs
 
     # Snippets
     luasnip
@@ -74,6 +79,13 @@
       startPluginsWithDeps
     }
   '';
+
+  runtimePath = lib.makeBinPath (with pkgs; [
+    nil
+    lua-language-server
+
+    yazi
+  ]);
 in
   symlinkJoin {
     name = "nvim";
@@ -81,6 +93,7 @@ in
     nativeBuildInputs = [makeWrapper];
     postBuild = ''
       wrapProgram $out/bin/nvim \
+        --suffix PATH : ${runtimePath} \
         --add-flags '-u' \
         --add-flags '${./config/nvim/init.lua}' \
         --add-flags '--cmd' \

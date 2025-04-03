@@ -6,6 +6,7 @@ require("kanagawa").setup({
         BlinkCmpMenu = { bg = colors.palette.dragonBlack3 },
         BlinkCmpLabelDetail = { bg = colors.palette.dragonBlack3 },
         BlinkCmpMenuSelection = { bg = colors.palette.waveBlue1 },
+        FloatBorder = { bg = colors.palette.dragonBlack3 },
       }
   end,
 })

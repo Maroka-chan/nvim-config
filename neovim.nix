@@ -43,8 +43,7 @@
     #cmp-rg
     #cmp-omni
     blink-cmp
-    blink-pairs
-    #nvim-autopairs
+    ultimate-autopair-nvim
 
     # Snippets
     luasnip

@@ -4,7 +4,6 @@ require("ultimate-autopair").setup({
     rmap = '<C-S-,>',
     cmap = '<C-S-.>',
     rcmap = '<C-S-,>',
-    nocursormove = false
   },
   close = {
     map='<C-S-0>',

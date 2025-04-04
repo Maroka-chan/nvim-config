@@ -34,38 +34,37 @@ local rust_settings = {
       buildScripts = {
         enable = true,
       },
-      allFeatures = true,
+      features = "all",
     },
     procMacro = {
       enable = true
     },
+    cachePriming = {
+      enable = false
+    }
   }
 }
 
 -- Language Server Protocols to Enable
-local LSP_servers = {
-  { 'lua_ls', settings = lua_settings  },
-  { 'bashls' },
-  { 'csharp_ls' },
-  { 'dockerls' },
-  { 'docker_compose_language_service' },
-  { 'gopls' },
-  { 'pyright' },
-  { 'texlab' },
-  { 'clangd' },
-  { 'rust_analyzer', settings = rust_settings },
-  { 'nil_ls' },
+local servers = {
+  lua_ls = lua_settings,
+  bashls = {},
+  csharp_ls = {},
+  dockerls = {},
+  docker_compose_language_service = {},
+  gopls = {},
+  pyright = {},
+  texlab = {},
+  clangd = {},
+  rust_analyzer = rust_settings,
+  nil_ls = {},
 }
 
-for _, lsp in ipairs(LSP_servers) do
-  local conf = {}
-  conf.capabilities = require('blink.cmp').get_lsp_capabilities(conf.capabilities)
+for server, config in pairs(servers) do
+  config.capabilities =
+    require('blink.cmp').get_lsp_capabilities(config.capabilities)
 
-  if lsp.settings ~= nil then
-    conf.settings = lsp.settings
-  end
-
-  lspconfig[lsp[1]].setup(conf)
+  lspconfig[server].setup(config)
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -76,19 +75,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.keymap.set(mode, lhs, rhs, opts)
     end
 
-    bufmap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
-    bufmap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
-    bufmap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
-    bufmap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
-    bufmap('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
-    bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
-    bufmap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
-    bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
-    bufmap('n', '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
-    bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
-    bufmap('x', '<F4>', '<cmd>lua vim.lsp.buf.range_code_action()<cr>')
-    bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
-    bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
-    bufmap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
+    bufmap('n',         'K',      vim.lsp.buf.hover)
+    bufmap('n',         'gd',     vim.lsp.buf.definition)
+    bufmap('n',         'gD',     vim.lsp.buf.declaration)
+    bufmap('n',         'gi',     vim.lsp.buf.implementation)
+    bufmap('n',         'go',     vim.lsp.buf.type_definition)
+    bufmap('n',         'gr',     vim.lsp.buf.references)
+    bufmap('n',         'gs',     vim.lsp.buf.signature_help)
+    bufmap('n',         '<F2>',   vim.lsp.buf.rename)
+    bufmap('n',         '<F3>',   function() vim.lsp.buf.format({ async = true }) end)
+    bufmap({'v', 'n'},  '<M-CR>', vim.lsp.buf.code_action)
+
+    bufmap('n',         'gl',     vim.diagnostic.open_float)
+    bufmap('n',         '[d',     function() vim.diagnostic.jump({ count = -1, float = true }) end)
+    bufmap('n',         ']d',     function() vim.diagnostic.jump({ count = 1, float = true }) end)
   end
 })

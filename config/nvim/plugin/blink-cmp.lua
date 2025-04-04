@@ -22,6 +22,7 @@ blink_cmp.setup({
     list = { selection = { preselect = false } },
     menu = {
       draw = { columns = { { "label", "label_description", gap = 1 }, { "kind_icon", gap = 1, "kind" } } },
+      border = 'rounded'
     }
   },
 

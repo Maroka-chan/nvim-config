@@ -134,10 +134,10 @@ function ToggleTerm()
                 vim.cmd("hide")
                 term_win_id = nil
         elseif term_buf then
-                vim.cmd("sbuffer " .. term_buf .. "| wincmd J | resize 30")
+                vim.cmd("sbuffer " .. term_buf .. "| wincmd J")
                 term_win_id = vim.fn.win_getid()
         else
-                vim.cmd("split | wincmd J | resize 30 | terminal")
+                vim.cmd("split | wincmd J | terminal")
                 term_win_id = vim.fn.win_getid()
                 term_buf = vim.fn.bufnr('%')
         end

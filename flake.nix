@@ -7,11 +7,11 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
-  outputs = inputs @ { self, nixpkgs, flake-parts, home-manager, ... }:
+  outputs = inputs @ { nixpkgs, flake-parts, ... }:
   flake-parts.lib.mkFlake { inherit inputs; } {
     systems = [ "x86_64-linux" ];
 
-    perSystem = { config, self', inputs', system, ... }: let
+    perSystem = { system, ... }: let
       pkgs = import nixpkgs { inherit system; overlays = [ inputs.neovim-nightly-overlay.overlays.default ]; };
     in {
       packages.default = pkgs.callPackage ./neovim.nix {};

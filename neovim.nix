@@ -21,75 +21,17 @@
 
   startPlugins = with vimPlugins; [
     vague
-    oil-nvim
     nvim-lspconfig
     mini-pick
-
-    nvim-cmp
-    cmp-nvim-lsp
-    cmp-nvim-lsp-signature-help
-    cmp-nvim-lsp-document-symbol
-    cmp-path
-    cmp-buffer
-    cmp-cmdline
-    cmp_luasnip
-    cmp-rg
-    cmp-omni
-
+    snacks-nvim
+    lualine-nvim
     ultimate-autopair-nvim
-
     nvim-web-devicons
-
+    yazi-nvim
     luasnip
+    friendly-snippets
+    blink-cmp
   ];
-  #startPlugins = with vimPlugins; [
-  #  kanagawa-nvim         # Theme
-
-  #  #nvim-tree-lua         # File Tree
-  #  lualine-nvim          # Status Line
-  #  plenary-nvim          # Lua Helper Functions
-  #  nvim-hlslens          # Match Enhancement
-  #  nvim-scrollbar        # Scrollbar
-  #  nvim-web-devicons     # Icons
-  #  markdown-preview-nvim # Markdown Preview
-  #  toggleterm-nvim
-  #  rustaceanvim
-  #  flutter-tools-nvim
-
-  #  yazi-nvim
-  #  snacks-nvim
-  #  
-  #  # Fuzzy Finder
-  #  telescope-nvim
-  #  telescope-fzf-native-nvim
-
-  #  # LSP
-  #  nvim-lspconfig
-  #  
-  #  # Completion
-  #  #nvim-cmp
-  #  #cmp-nvim-lsp
-  #  #cmp-nvim-lsp-signature-help
-  #  #cmp-nvim-lsp-document-symbol
-  #  #cmp-path
-  #  #cmp-buffer
-  #  #cmp-cmdline
-  #  #cmp_luasnip
-  #  #cmp-rg
-  #  #cmp-omni
-  #  blink-cmp
-  #  ultimate-autopair-nvim
-  #  #fzf-lua
-
-  #  # Snippets
-  #  luasnip
-  #  friendly-snippets
-
-  #  # Parsing
-  #  nvim-treesitter.withAllGrammars
-  #  nvim-treesitter-context
-  #  nvim-treesitter-refactor
-  #];
 
   foldPlugins = builtins.foldl' (
     acc: next:
@@ -123,9 +65,9 @@
     #ripgrep
     #cargo
     rust-analyzer
+    nixd
+    yazi
     #dart
-
-    #yazi
   ]);
 in
   symlinkJoin {

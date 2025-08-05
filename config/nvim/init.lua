@@ -8,77 +8,44 @@ vim.o.signcolumn     = 'yes'
 vim.o.clipboard      = 'unnamedplus'
 vim.o.winborder      = "rounded"
 vim.g.mapleader      = " "
-vim.o.termguicolors = true -- Enable 24-bit color
+vim.o.termguicolors  = true -- Enable 24-bit color
 
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
 
-require "oil".setup() -- File Explorer
-require "mini.pick".setup() -- Search files and live grep
-vim.keymap.set('n', '<leader>f', ":Pick files<CR>")
-vim.keymap.set('n', '<leader>g', ":Pick grep_live<CR>")
-vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
-vim.keymap.set('n', '<leader>e', ":Oil<CR>")
+require "lualine".setup({})
+require "luasnip.loaders.from_vscode".lazy_load()
+local yazi = require "yazi"
+yazi.setup({ open_for_directories = true })
+local snacks = require "snacks"
+vim.keymap.set('n', '<leader>f', snacks.picker.files)
+vim.keymap.set('n', '<leader>g', snacks.picker.grep)
+vim.keymap.set('n', '<leader>e', yazi.yazi)
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
 -- Autocomplete
-local cmp = require 'cmp';
-cmp.setup({
-        snippet = {
-                -- REQUIRED - you must specify a snippet engine
-                expand = function(args)
-                        require('luasnip').lsp_expand(args.body)
-                        vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
-                end,
+local blink = require "blink.cmp"
+blink.setup({
+        completion = {
+                documentation = { auto_show = true, auto_show_delay_ms = 500, },
+                accept = { auto_brackets = { enabled = false }, },
+                list = { selection = { preselect = false } },
+                ghost_text = { enabled = true, show_without_selection = true },
         },
-        window = {
-                completion = cmp.config.window.bordered(),
-                documentation = cmp.config.window.bordered(),
+        signature = { enabled = true },
+        fuzzy = { implementation = "prefer_rust_with_warning" },
+        keymap = {
+                preset = 'default',
+                ['<Tab>'] = { 'select_and_accept', 'fallback' },
+                ['<CR>'] = { 'accept', 'fallback' },
         },
-        mapping = cmp.mapping.preset.insert({
-                ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                ['<C-Space>'] = cmp.mapping.complete(),
-                ['<C-e>'] = cmp.mapping.abort(),
-                ['<CR>'] = cmp.mapping.confirm({ select = false }),
-                ['<Tab>'] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-                { name = 'nvim_lsp' },
-                { name = 'luasnip' }, -- For luasnip users.
-        }, {
-                { name = 'buffer' },
-        }),
-        experimental = {
-                ghost_text = true,
-        },
-})
-
--- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline({ '/', '?' }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-                { name = 'buffer' }
-        }
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-                { name = 'path' }
-        }, {
-                { name = 'cmdline' }
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false }
+        snippets = { preset = 'luasnip' },
 })
 
 -- LSP
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-vim.lsp.enable({ 'lua_ls', 'rust_analyzer' })
+vim.lsp.enable({ 'lua_ls', 'rust_analyzer', 'nixd' })
 vim.lsp.config('lua_ls', {
-        capabilities = capabilities,
+        capabilities = blink.get_lsp_capabilities(),
         settings = {
                 Lua = {
                         runtime = {
@@ -105,25 +72,26 @@ vim.lsp.config('lua_ls', {
         },
 })
 vim.lsp.config('rust_analyzer', {
-        capabilities = capabilities,
+        capabilities = blink.get_lsp_capabilities(),
         -- Server-specific settings. See `:help lsp-quickstart`
         settings = {
                 ['rust-analyzer'] = {},
         },
 })
+vim.lsp.config('nixd', { capabilities = blink.get_lsp_capabilities(), })
 
 -- Autopairs
 require("ultimate-autopair").setup({
-  fastwarp = {
-    map = '<C-S-.>',
-    rmap = '<C-S-,>',
-    cmap = '<C-S-.>',
-    rcmap = '<C-S-,>',
-  },
-  close = {
-    map='<C-S-0>',
-    cmap='<C-S-0>',
-  },
+        fastwarp = {
+                map = '<C-S-.>',
+                rmap = '<C-S-,>',
+                cmap = '<C-S-.>',
+                rcmap = '<C-S-,>',
+        },
+        close = {
+                map = '<C-S-0>',
+                cmap = '<C-S-0>',
+        },
 })
 
 -- Terminal
@@ -131,16 +99,18 @@ local term_buf = nil
 local term_win_id = nil
 function ToggleTerm()
         if term_win_id then
-                vim.cmd("hide")
+                vim.fn.win_execute(term_win_id, "hide")
                 term_win_id = nil
-        elseif term_buf then
+        elseif term_buf and vim.fn.bufexists(term_buf) == 1 then
                 vim.cmd("sbuffer " .. term_buf .. "| wincmd J")
                 term_win_id = vim.fn.win_getid()
+                vim.cmd("startinsert")
         else
                 vim.cmd("split | wincmd J | terminal")
                 term_win_id = vim.fn.win_getid()
                 term_buf = vim.fn.bufnr('%')
+                vim.cmd("startinsert")
         end
-        vim.cmd("startinsert")
 end
-vim.keymap.set({ 'n', 't' }, '<leader>t', ToggleTerm)
+
+vim.keymap.set({'n', 't'}, [[<c-\>]], ToggleTerm)

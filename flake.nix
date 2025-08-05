@@ -15,7 +15,6 @@
       pkgs = import nixpkgs { inherit system; overlays = [ inputs.neovim-nightly-overlay.overlays.default ]; };
     in {
       packages.default = pkgs.callPackage ./neovim.nix {};
-      packages.old = pkgs.callPackage ./neovim_old.nix {};
     };
   };
 }

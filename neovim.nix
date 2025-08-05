@@ -58,16 +58,10 @@
   '';
 
   runtimePath = lib.makeBinPath (with pkgs; [
-    #nil
     lua-language-server
-    #fzf
-    #fd
-    #ripgrep
-    #cargo
     rust-analyzer
     nixd
     yazi
-    #dart
   ]);
 in
   symlinkJoin {

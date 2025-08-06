@@ -32,6 +32,7 @@ let
     luasnip
     friendly-snippets
     blink-cmp
+    fidget-nvim
   ];
 
   foldPlugins = builtins.foldl' (

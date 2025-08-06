@@ -13,6 +13,7 @@ vim.o.termguicolors  = true -- Enable 24-bit color
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
 
+require "fidget".setup()
 require "lualine".setup({})
 require "luasnip.loaders.from_vscode".lazy_load()
 local yazi = require "yazi"
@@ -72,11 +73,32 @@ vim.lsp.config('lua_ls', {
                 },
         },
 })
+local rust_capabilities = blink.get_lsp_capabilities()
+rust_capabilities.workspace = { didChangeWatchedFiles = { dynamicRegistration = true } }
 vim.lsp.config('rust_analyzer', {
-        capabilities = blink.get_lsp_capabilities(),
+        capabilities = rust_capabilities,
         -- Server-specific settings. See `:help lsp-quickstart`
         settings = {
-                ['rust-analyzer'] = {},
+                ['rust-analyzer'] = {
+                        diagnostics = {
+                                enable = false;
+                        },
+                        files = {
+                                excludeDirs = {
+                                        ".dart_tool",
+                                        ".android",
+                                        ".direnv",
+                                        ".devenv",
+                                        ".idea",
+                                        ".git",
+                                        ".github",
+                                        ".venv",
+                                        "target",
+                                        "build",
+                                        "result",
+                                }
+                        }
+                },
         },
 })
 vim.lsp.config('nixd', {

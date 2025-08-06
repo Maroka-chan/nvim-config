@@ -71,6 +71,7 @@ in
     postBuild = ''
       wrapProgram $out/bin/nvim \
         --suffix PATH : ${runtimePath} \
+        --set YAZI_CONFIG_HOME ${./config/yazi} \
         --add-flags '-u' \
         --add-flags '${./config/nvim/init.lua}' \
         --add-flags '--cmd' \

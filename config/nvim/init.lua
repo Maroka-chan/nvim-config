@@ -1,6 +1,6 @@
 vim.o.number         = true
 vim.o.relativenumber = true
-vim.o.wrap           = false
+vim.o.wrap           = true
 vim.o.swapfile       = false
 vim.o.tabstop        = 4
 vim.o.expandtab      = true
@@ -18,8 +18,9 @@ require "luasnip.loaders.from_vscode".lazy_load()
 local yazi = require "yazi"
 yazi.setup({ open_for_directories = true })
 local snacks = require "snacks"
-vim.keymap.set('n', '<leader>f', snacks.picker.files)
-vim.keymap.set('n', '<leader>g', snacks.picker.grep)
+local picker_config = { win = { input = { keys = { ["<Esc>"] = { "cancel", mode = "i" }, } } } }
+vim.keymap.set('n', '<leader>f', function() snacks.picker.files(picker_config) end)
+vim.keymap.set('n', '<leader>g', function() snacks.picker.grep(picker_config) end)
 vim.keymap.set('n', '<leader>e', yazi.yazi)
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
@@ -113,4 +114,5 @@ function ToggleTerm()
         end
 end
 
-vim.keymap.set({'n', 't'}, [[<c-\>]], ToggleTerm)
+vim.keymap.set('n', '<leader>t', ToggleTerm)
+vim.keymap.set('t', '<Esc>', ToggleTerm)

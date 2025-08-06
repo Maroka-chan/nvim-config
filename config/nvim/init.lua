@@ -79,7 +79,19 @@ vim.lsp.config('rust_analyzer', {
                 ['rust-analyzer'] = {},
         },
 })
-vim.lsp.config('nixd', { capabilities = blink.get_lsp_capabilities(), })
+vim.lsp.config('nixd', {
+        capabilities = blink.get_lsp_capabilities(),
+        settings = {
+                nixd = {
+                        nixpkgs = {
+                                expr = "import <nixpkgs> { }",
+                        },
+                        formatting = {
+                                command = { "nixfmt" },
+                        },
+                },
+        },
+})
 
 -- Autopairs
 require("ultimate-autopair").setup({

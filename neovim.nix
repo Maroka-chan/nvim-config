@@ -6,7 +6,8 @@
   vimPlugins,
   pkgs,
   lib,
-}: let
+}:
+let
   packageName = "mypackage";
 
   vague = pkgs.vimUtils.buildVimPlugin {
@@ -35,51 +36,52 @@
 
   foldPlugins = builtins.foldl' (
     acc: next:
-      acc
-      ++ [
-        next
-      ]
-      ++ (foldPlugins (next.dependencies or []))
-  ) [];
+    acc
+    ++ [
+      next
+    ]
+    ++ (foldPlugins (next.dependencies or [ ]))
+  ) [ ];
 
   startPluginsWithDeps = lib.unique (foldPlugins startPlugins);
 
-  packpath = runCommandLocal "packpath" {} ''
+  packpath = runCommandLocal "packpath" { } ''
     mkdir -p $out/pack/${packageName}/{start,opt}
 
     ln -vsfT ${./config/nvim} $out/pack/${packageName}/start/myplugin
 
-    ${
-      lib.concatMapStringsSep
-      "\n"
-      (plugin: "ln -vsfT ${plugin} $out/pack/${packageName}/start/${lib.getName plugin}")
-      startPluginsWithDeps
-    }
+    ${lib.concatMapStringsSep "\n" (
+      plugin: "ln -vsfT ${plugin} $out/pack/${packageName}/start/${lib.getName plugin}"
+    ) startPluginsWithDeps}
   '';
 
-  runtimePath = lib.makeBinPath (with pkgs; [
-    lua-language-server
-    rust-analyzer
-    nixd
-    yazi
-  ]);
+  runtimePath = lib.makeBinPath (
+    with pkgs;
+    [
+      lua-language-server
+      rust-analyzer
+      nixd
+      nixfmt
+      yazi
+    ]
+  );
 in
-  symlinkJoin {
-    name = "nvim";
-    paths = [neovim-unwrapped];
-    nativeBuildInputs = [makeWrapper];
-    postBuild = ''
-      wrapProgram $out/bin/nvim \
-        --suffix PATH : ${runtimePath} \
-        --set YAZI_CONFIG_HOME ${./config/yazi} \
-        --add-flags '-u' \
-        --add-flags '${./config/nvim/init.lua}' \
-        --add-flags '--cmd' \
-        --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
-        --set-default NVIM_APPNAME nvim-custom
-    '';
+symlinkJoin {
+  name = "nvim";
+  paths = [ neovim-unwrapped ];
+  nativeBuildInputs = [ makeWrapper ];
+  postBuild = ''
+    wrapProgram $out/bin/nvim \
+      --suffix PATH : ${runtimePath} \
+      --set YAZI_CONFIG_HOME ${./config/yazi} \
+      --add-flags '-u' \
+      --add-flags '${./config/nvim/init.lua}' \
+      --add-flags '--cmd' \
+      --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
+      --set-default NVIM_APPNAME nvim-custom
+  '';
 
-    passthru = {
-      inherit packpath;
-    };
-  }
+  passthru = {
+    inherit packpath;
+  };
+}

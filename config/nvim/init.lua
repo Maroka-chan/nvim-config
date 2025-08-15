@@ -13,7 +13,7 @@ vim.o.termguicolors  = true -- Enable 24-bit color
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
 
-require "fidget".setup()
+require "fidget".setup({})
 require "lualine".setup({})
 require "luasnip.loaders.from_vscode".lazy_load()
 local yazi = require "yazi"
@@ -45,8 +45,47 @@ blink.setup({
 })
 
 -- LSP
-vim.lsp.enable({ 'lua_ls', 'rust_analyzer', 'nixd' })
+
+--local language_servers = require("lspconfig").util.available_servers()
+--vim.lsp.enable({ 'lua_ls', 'rust_analyzer', 'nixd', 'bashls' })
+
+--local deprecated = {
+--        volar = true,
+--}
+--
+--local servers = {}
+--for _, path in ipairs(vim.api.nvim_list_runtime_paths()) do
+--        local lspdir = path .. "/lsp"
+--        local handle = vim.loop.fs_scandir(lspdir)
+--        if handle then
+--                while true do
+--                        local name, typ = vim.loop.fs_scandir_next(handle)
+--                        if not name then break end
+--                        if typ == "file" and name:match("%.lua$") then
+--                                local server_name = name:gsub("%.lua$", "")
+--                                if not deprecated[server_name] then
+--                                        local server_config = dofile(lspdir .. "/" .. name)
+--                                        local server_cmd = server_config.cmd
+--                                        if type(server_cmd) == "table" and next(server_config.cmd) then
+--                                                local new_cmd = { "nix", "run", "nixpkgs#" .. server_cmd[1], "--" }
+--                                                vim.list_extend(new_cmd, { unpack(server_cmd, 2) })
+--                                                vim.lsp.config(server_name, { cmd = new_cmd })
+--                                                table.insert(servers, server_name)
+--                                        end
+--                                end
+--                        end
+--                end
+--        end
+--end
+
+--vim.lsp.enable(servers) -- Enable all servers
+
+vim.lsp.enable('bashls')
+vim.lsp.config('bashls', { cmd = { "nix", "run", "nixpkgs#bash-language-server", "start" } })
+
+vim.lsp.enable('lua_ls')
 vim.lsp.config('lua_ls', {
+        cmd = { "nix", "run", "nixpkgs#lua-language-server" },
         capabilities = blink.get_lsp_capabilities(),
         settings = {
                 Lua = {
@@ -73,15 +112,18 @@ vim.lsp.config('lua_ls', {
                 },
         },
 })
+
 local rust_capabilities = blink.get_lsp_capabilities()
 rust_capabilities.workspace = { didChangeWatchedFiles = { dynamicRegistration = true } }
+vim.lsp.enable('rust_analyzer')
 vim.lsp.config('rust_analyzer', {
+        cmd = { "rust-analyzer", "||", "nix", "run", "nixpkgs#rust-analyzer" },
         capabilities = rust_capabilities,
         -- Server-specific settings. See `:help lsp-quickstart`
         settings = {
                 ['rust-analyzer'] = {
                         diagnostics = {
-                                enable = false;
+                                enable = false,
                         },
                         files = {
                                 excludeDirs = {
@@ -101,7 +143,10 @@ vim.lsp.config('rust_analyzer', {
                 },
         },
 })
+
+vim.lsp.enable('nixd')
 vim.lsp.config('nixd', {
+        cmd = { "nix", "run", "nixpkgs#nixd" },
         capabilities = blink.get_lsp_capabilities(),
         settings = {
                 nixd = {
@@ -109,7 +154,7 @@ vim.lsp.config('nixd', {
                                 expr = "import <nixpkgs> { }",
                         },
                         formatting = {
-                                command = { "nixfmt" },
+                                command = { "nix", "run", "nixpkgs#nixfmt" },
                         },
                 },
         },

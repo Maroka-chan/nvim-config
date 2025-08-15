@@ -59,10 +59,6 @@ let
   runtimePath = lib.makeBinPath (
     with pkgs;
     [
-      lua-language-server
-      rust-analyzer
-      nixd
-      nixfmt
       yazi
     ]
   );

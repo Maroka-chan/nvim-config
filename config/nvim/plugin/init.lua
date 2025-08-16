@@ -162,6 +162,15 @@ vim.lsp.config('nixd', {
         settings = nixd_settings
 })
 
+vim.lsp.enable('dartls')
+vim.lsp.config('dartls', {
+        cmd = cmd_with_fallback(
+                "dart",
+                "nixpkgs#dart",
+                { "language-server", "--protocol=lsp" }
+        )
+})
+
 
 
 --  ▄▀▄ █ █ ▀█▀ ▄▀▄ █▀▄ ▄▀▄ █ █▀▄ ▄▀▀

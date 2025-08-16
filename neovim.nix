@@ -8,7 +8,7 @@
   lib,
 }:
 let
-  packageName = "mypackage";
+  packageName = "monica";
 
   vague = pkgs.vimUtils.buildVimPlugin {
     name = "vague.nvim";
@@ -23,7 +23,6 @@ let
   startPlugins = with vimPlugins; [
     vague
     nvim-lspconfig
-    mini-pick
     snacks-nvim
     lualine-nvim
     ultimate-autopair-nvim
@@ -49,7 +48,7 @@ let
   packpath = runCommandLocal "packpath" { } ''
     mkdir -p $out/pack/${packageName}/{start,opt}
 
-    ln -vsfT ${./config/nvim} $out/pack/${packageName}/start/myplugin
+    ln -vsfT ${./config/nvim} $out/pack/${packageName}/start/${packageName}-nvim
 
     ${lib.concatMapStringsSep "\n" (
       plugin: "ln -vsfT ${plugin} $out/pack/${packageName}/start/${lib.getName plugin}"
@@ -71,8 +70,6 @@ symlinkJoin {
     wrapProgram $out/bin/nvim \
       --suffix PATH : ${runtimePath} \
       --set YAZI_CONFIG_HOME ${./config/yazi} \
-      --add-flags '-u' \
-      --add-flags '${./config/nvim/init.lua}' \
       --add-flags '--cmd' \
       --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
       --set-default NVIM_APPNAME nvim-custom

@@ -13,7 +13,7 @@ vim.o.clipboard          = 'unnamedplus'
 vim.o.winborder          = "rounded"
 vim.g.mapleader          = " "
 vim.o.termguicolors      = true -- Enable 24-bit color
-vim.o.colorcolumn        = 80
+vim.o.colorcolumn        = "80"
 
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
@@ -94,8 +94,8 @@ local lua_settings = deep_merge(
 )
 vim.lsp.config('lua_ls', {
         cmd = cmd_with_fallback(
-                "rust-analyzer",
-                "nixpkgs#rust-analyzer"
+                "lua-language-server",
+                "nixpkgs#lua-language-server"
         ),
         settings = lua_settings
 })
@@ -131,7 +131,6 @@ local rust_settings = deep_merge(
                 "excludeDirs"
         }, rust_excluded_dirs)
 )
-print(vim.inspect(rust_settings))
 vim.lsp.config('rust_analyzer', {
         cmd = cmd_with_fallback(
                 "rust-analyzer",
@@ -156,8 +155,10 @@ local nixd_settings = deep_merge(
         }, { "nix", "run", "nixpkgs#nixfmt" })
 )
 vim.lsp.config('nixd', {
-        cmd = { "nix", "run", "nixpkgs#nixd" },
-        capabilities = blink.get_lsp_capabilities(),
+        cmd = cmd_with_fallback(
+                "nixd",
+                "nixpkgs#nixd"
+        ),
         settings = nixd_settings
 })
 

@@ -26,28 +26,23 @@ yazi.setup({ open_for_directories = true })
 
 
 local snacks = require "snacks"
+local picker_sources = ntable(
+        { "explorer", "layout", "layout", "position" },
+        "right"
+)
 snacks.setup({
         picker = {
                 enabled = true,
-                sources = {
-                        explorer = {
-                                layout = { layout = { position = "right" } }
-                        }
-                }
+                sources = picker_sources
         },
-        explorer = { enabled = true, replace_netrw = true }
+        explorer = {
+                enabled = true,
+                replace_netrw = true
+        }
 })
 local picker = snacks.picker
 local picker_config = ntable({ "win", "input", "keys" })
-picker_config.win.input.keys = { ["<Esc>"] = { "cancel", mode = "i" }, }
-local explorer = snacks.explorer
-local explorer_config = ntable({ "win", "input", "keys" })
-explorer_config.win.input.keys = {
-        ["<Esc>"] = { "cancel", mode = "i" },
-        ["<CR>"] = { { "confirm", "toggle_focus" }, mode = "i" },
-}
-explorer_config.focus = "input"
-explorer_config.auto_close = true
+picker_config.win.input.keys = { ["<Esc>"] = { "cancel", mode = "i" } }
 
 
 -- ASCII Art: https://texteditor.com/multiline-text-art/
@@ -81,15 +76,15 @@ blink.setup({
 
 -- Format on write
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp", { clear = true }),
-  callback = function(args)
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      buffer = args.buf,
-      callback = function()
-        vim.lsp.buf.format {async = false, id = args.data.client_id }
-      end,
-    })
-  end
+        group = vim.api.nvim_create_augroup("lsp", { clear = true }),
+        callback = function(args)
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                        buffer = args.buf,
+                        callback = function()
+                                vim.lsp.buf.format { async = false, id = args.data.client_id }
+                        end,
+                })
+        end
 })
 
 
@@ -254,10 +249,9 @@ end
 local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
-        { "<leader>e", function() explorer.open(explorer_config) end, desc = "Explore files" },
-        { "<leader>f", function() picker.files(picker_config) end, desc = "Find files" },
-        { "<leader>g", function() picker.grep(picker_config) end, desc = "Live Grep" },
-        --{ "<leader>lf", vim.lsp.buf.format, desc = "Format file" },
-        { "<leader>t", ToggleTerm, desc = "Toggle terminal" },
-        { "<Esc>", ToggleTerm, mode = 't' },
+        { "<leader>e", function() snacks.explorer.open({ auto_close = true }) end, desc = "Explore files" },
+        { "<leader>f", function() picker.files(picker_config) end,    desc = "Find files" },
+        { "<leader>g", function() picker.grep(picker_config) end,     desc = "Live Grep" },
+        { "<leader>t", ToggleTerm,                                    desc = "Toggle terminal" },
 })
+vim.keymap.set('t', '<Esc>', ToggleTerm)

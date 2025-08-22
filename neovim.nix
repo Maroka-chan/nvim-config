@@ -32,6 +32,7 @@ let
     friendly-snippets
     blink-cmp
     fidget-nvim
+    which-key-nvim
   ];
 
   foldPlugins = builtins.foldl' (
@@ -58,7 +59,8 @@ let
   runtimePath = lib.makeBinPath (
     with pkgs;
     [
-      yazi
+      fd
+      ripgrep
     ]
   );
 in
@@ -69,7 +71,6 @@ symlinkJoin {
   postBuild = ''
     wrapProgram $out/bin/nvim \
       --suffix PATH : ${runtimePath} \
-      --set YAZI_CONFIG_HOME ${./config/yazi} \
       --add-flags '--cmd' \
       --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
       --set-default NVIM_APPNAME nvim-custom

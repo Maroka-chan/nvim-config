@@ -14,6 +14,7 @@ vim.o.winborder          = "rounded"
 vim.g.mapleader          = " "
 vim.o.termguicolors      = true -- Enable 24-bit color
 vim.o.colorcolumn        = "80"
+vim.o.updatetime         = 250
 
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
@@ -268,3 +269,16 @@ wk.add({
         { "<leader>t", ToggleTerm,                                                 desc = "Toggle terminal" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
+
+
+-- Show diagnostics on hover
+vim.api.nvim_create_autocmd("CursorHold", {
+        callback = function()
+                vim.diagnostic.open_float(nil, {
+                        focusable = false,
+                        close_events = { "CursorMoved", "BufLeave", "InsertEnter" },
+                        border = "rounded",
+                        scope = "cursor",
+                })
+        end,
+})

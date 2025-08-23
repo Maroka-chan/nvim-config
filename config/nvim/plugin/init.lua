@@ -261,8 +261,10 @@ local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
         { "<leader>e", function() snacks.explorer.open({ auto_close = true }) end, desc = "Explore files" },
-        { "<leader>f", function() picker.files(picker_config) end,    desc = "Find files" },
-        { "<leader>g", function() picker.grep(picker_config) end,     desc = "Live Grep" },
-        { "<leader>t", ToggleTerm,                                    desc = "Toggle terminal" },
+        { "<leader>f", function() picker.files(picker_config) end,                 desc = "Find files" },
+        { "<leader>g", function() picker.grep(picker_config) end,                  desc = "Live Grep" },
+        { "<leader>b", function() picker.buffers(picker_config) end,               desc = "List Buffers" },
+        { "<leader>p", function() picker.projects(picker_config) end,              desc = "List Projects" },
+        { "<leader>t", ToggleTerm,                                                 desc = "Toggle terminal" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)

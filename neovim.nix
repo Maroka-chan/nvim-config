@@ -33,6 +33,7 @@ let
     blink-cmp
     fidget-nvim
     which-key-nvim
+    guess-indent-nvim
   ];
 
   foldPlugins = builtins.foldl' (

@@ -6,8 +6,8 @@ vim.o.number             = true
 vim.o.relativenumber     = true
 vim.o.wrap               = true
 vim.o.swapfile           = false
-vim.o.tabstop            = 4
 vim.o.expandtab          = true
+vim.o.smartindent        = true
 vim.o.signcolumn         = 'yes'
 vim.o.clipboard          = 'unnamedplus'
 vim.o.winborder          = "rounded"
@@ -18,12 +18,15 @@ vim.o.colorcolumn        = "80"
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
 
+require "guess-indent".setup({})
 require "fidget".setup({})
 require "lualine".setup({})
 require "luasnip.loaders.from_vscode".lazy_load()
 local yazi = require "yazi"
 yazi.setup({ open_for_directories = true })
 
+vim.api.nvim_set_hl(0, 'SnacksIndent', { fg = "#2b2b2d" })
+vim.api.nvim_set_hl(0, 'SnacksIndent1', { fg = "#646469" })
 
 local snacks = require "snacks"
 local picker_sources = ntable(
@@ -38,11 +41,19 @@ snacks.setup({
         explorer = {
                 enabled = true,
                 replace_netrw = true
+        },
+        indent = {
+                indent = { hl = "SnacksIndent" },
+                scope = {
+                        hl = "SnacksIndent1",
+                },
+                animate = { enabled = false }
         }
 })
 local picker = snacks.picker
 local picker_config = ntable({ "win", "input", "keys" })
 picker_config.win.input.keys = { ["<Esc>"] = { "cancel", mode = "i" } }
+snacks.indent.enable()
 
 
 -- ASCII Art: https://texteditor.com/multiline-text-art/

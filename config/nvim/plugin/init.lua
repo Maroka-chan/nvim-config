@@ -162,6 +162,9 @@ local rust_excluded_dirs = {
         "build",
         "result",
 }
+local rust_excluded_globs = {
+        "**/target",
+}
 local rust_settings = deep_merge(
         ntable({
                 "rust-analyzer",
@@ -172,7 +175,11 @@ local rust_settings = deep_merge(
                 "rust-analyzer",
                 "files",
                 "excludeDirs"
-        }, rust_excluded_dirs)
+        }, rust_excluded_dirs),
+        ntable({
+                "rust-analyzer",
+                "excludeGlobs"
+        }, rust_excluded_globs)
 )
 vim.lsp.config('rust_analyzer', {
         cmd = cmd_with_fallback(

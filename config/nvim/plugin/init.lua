@@ -15,6 +15,7 @@ vim.g.mapleader          = " "
 vim.o.termguicolors      = true -- Enable 24-bit color
 vim.o.colorcolumn        = "80"
 vim.o.updatetime         = 250
+vim.o.splitright         = true
 
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
@@ -262,18 +263,142 @@ function ToggleTerm()
         end
 end
 
+--  ▄▀▄ █
+--  █▀█ █
+
+local copilot = require("copilot")
+copilot.setup({
+        panel = { enabled = false },
+        suggestion = {
+                auto_trigger = false, -- Suggest as we start typing
+                keymap = {
+                        accept_line = "<C-l>",
+                        accept = "<C-CR>",
+                        prev = "<C-,>",
+                        next = "<C-.>",
+                },
+        },
+})
+
+vim.api.nvim_create_autocmd("User", {
+        pattern = "BlinkCmpMenuOpen",
+        callback = function()
+                vim.b.copilot_suggestion_hidden = true
+        end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+        pattern = "BlinkCmpMenuClose",
+        callback = function()
+                vim.b.copilot_suggestion_hidden = false
+        end,
+})
+
+local codecompanion = require("codecompanion")
+codecompanion.setup({
+        strategies = {
+                chat = {
+                        adapter = {
+                                name = "copilot",
+                                model = "claude-sonnet-4",
+                        },
+                        keymaps = {
+                                send = {
+                                        modes = { i = "<CR>" },
+                                        opts = {},
+                                },
+                                close = {
+                                        modes = { n = "<Esc>", i = "<Esc>" },
+                                        opts = {},
+                                },
+                                -- Add further custom keymaps here
+                        },
+                },
+                inline = {
+                        adapter = {
+                                name = "copilot",
+                                model = "claude-sonnet-4",
+                        },
+                        keymaps = {
+                                accept_change = {
+                                        modes = { n = "<leader>aa" },
+                                        description = "Accept the suggested change",
+                                },
+                                reject_change = {
+                                        modes = { n = "<leader>ar" },
+                                        opts = { nowait = true },
+                                        description = "Reject the suggested change",
+                                },
+                        },
+                },
+        },
+        display = {
+                chat = {
+                        window = {
+                                width = 0.3,
+                        },
+                },
+        },
+})
+
+require("render-markdown").setup({
+        file_types = { "markdown", "codecompanion" },
+        render_modes = true,     -- Render in ALL modes
+        sign = {
+                enabled = false, -- Turn off in the status column
+        },
+        latex = { enabled = false },
+        overrides = {
+                filetype = {
+                        codecompanion = {
+                                html = {
+                                        tag = {
+                                                buf = { icon = " ", highlight = "CodeCompanionChatIcon" },
+                                                file = { icon = " ", highlight = "CodeCompanionChatIcon" },
+                                                group = { icon = " ", highlight = "CodeCompanionChatIcon" },
+                                                help = { icon = "󰘥 ", highlight = "CodeCompanionChatIcon" },
+                                                image = { icon = " ", highlight = "CodeCompanionChatIcon" },
+                                                symbols = { icon = " ", highlight = "CodeCompanionChatIcon" },
+                                                tool = { icon = "󰯠 ", highlight = "CodeCompanionChatIcon" },
+                                                url = { icon = "󰌹 ", highlight = "CodeCompanionChatIcon" },
+                                        },
+                                },
+                        },
+                },
+        },
+})
+
+local diff = require("mini.diff")
+diff.setup({
+        source = diff.gen_source.none(),
+})
+
+require("img-clip").setup({
+        filetypes = {
+                codecompanion = {
+                        prompt_for_file_name = false,
+                        template = "[Image]($FILE_PATH)",
+                        use_absolute_path = true,
+                },
+        },
+})
+
+
+
 --  █▄▀ ██▀ ▀▄▀ █▄ ▄█ ▄▀▄ █▀▄ ▄▀▀
 --  █ █ █▄▄  █  █ ▀ █ █▀█ █▀  ▄██
 
 local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
-        { "<leader>e", function() snacks.explorer.open({ auto_close = true }) end, desc = "Explore files" },
-        { "<leader>f", function() picker.files(picker_config) end,                 desc = "Find files" },
-        { "<leader>g", function() picker.grep(picker_config) end,                  desc = "Live Grep" },
-        { "<leader>b", function() picker.buffers(picker_config) end,               desc = "List Buffers" },
-        { "<leader>p", function() picker.projects(picker_config) end,              desc = "List Projects" },
-        { "<leader>t", ToggleTerm,                                                 desc = "Toggle terminal" },
+        { "<leader>e",  function() snacks.explorer.open({ auto_close = true }) end,         desc = "Explore files" },
+        { "<leader>f",  function() picker.files(picker_config) end,                         desc = "Find files" },
+        { "<leader>g",  function() picker.grep(picker_config) end,                          desc = "Live Grep" },
+        { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
+        { "<leader>p",  function() picker.projects(picker_config) end,                      desc = "List Projects" },
+        { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
+        { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
+        { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

@@ -34,6 +34,11 @@ let
     fidget-nvim
     which-key-nvim
     guess-indent-nvim
+    copilot-lua
+    mini-diff
+    img-clip-nvim
+    render-markdown-nvim
+    codecompanion-nvim
   ];
 
   foldPlugins = builtins.foldl' (
@@ -62,6 +67,9 @@ let
     [
       fd
       ripgrep
+      curl
+      coreutils
+      nodejs
     ]
   );
 in

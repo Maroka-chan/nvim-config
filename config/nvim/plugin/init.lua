@@ -308,7 +308,7 @@ codecompanion.setup({
                                         opts = {},
                                 },
                                 close = {
-                                        modes = { n = "<Esc>", i = "<Esc>" },
+                                        modes = { n = "<Esc>" },
                                         opts = {},
                                 },
                                 -- Add further custom keymaps here

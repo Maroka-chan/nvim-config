@@ -146,10 +146,6 @@ vim.lsp.config('lua_ls', {
 
 vim.lsp.enable('rust_analyzer')
 local rust_capabilities = blink.get_lsp_capabilities()
-rust_capabilities.workspace = ntable({
-        "didChangeWatchedFiles",
-        "dynamicRegistration"
-}, true)
 local rust_excluded_dirs = {
         ".dart_tool",
         ".android",
@@ -163,9 +159,6 @@ local rust_excluded_dirs = {
         "build",
         "result",
 }
-local rust_excluded_globs = {
-        "**/target",
-}
 local rust_settings = deep_merge(
         ntable({
                 "rust-analyzer",
@@ -175,12 +168,8 @@ local rust_settings = deep_merge(
         ntable({
                 "rust-analyzer",
                 "files",
-                "excludeDirs"
-        }, rust_excluded_dirs),
-        ntable({
-                "rust-analyzer",
-                "excludeGlobs"
-        }, rust_excluded_globs)
+                "exclude"
+        }, rust_excluded_dirs)
 )
 vim.lsp.config('rust_analyzer', {
         cmd = cmd_with_fallback(

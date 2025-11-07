@@ -388,6 +388,7 @@ wk.add({
         { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
         { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
+        { "gd",         vim.lsp.buf.definition,                                             desc = "Goto definition" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

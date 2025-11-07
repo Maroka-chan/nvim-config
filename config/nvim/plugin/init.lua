@@ -422,6 +422,8 @@ wk.add({
         { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
         { "gd",         vim.lsp.buf.definition,                                             desc = "Goto definition" },
+        { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
+        { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto next diagnostics" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

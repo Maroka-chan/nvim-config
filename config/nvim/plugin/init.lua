@@ -94,7 +94,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 vim.api.nvim_create_autocmd("BufWritePre", {
                         buffer = args.buf,
                         callback = function()
-                                vim.lsp.buf.format { async = false, id = args.data.client_id }
+                                vim.lsp.buf.format { async = false }
                         end,
                 })
         end
@@ -209,6 +209,39 @@ vim.lsp.config('dartls', {
                 "nixpkgs#dart",
                 { "language-server", "--protocol=lsp" }
         )
+})
+
+vim.lsp.enable('basedpyright')
+vim.lsp.config('basedpyright', {
+        cmd = cmd_with_fallback(
+                "basedpyright-langserver",
+                "nixpkgs#basedpyright",
+                { "--stdio" }
+        )
+})
+
+vim.lsp.enable('ruff')
+vim.lsp.config('ruff', {
+        cmd = cmd_with_fallback(
+                "ruff",
+                "nixpkgs#ruff",
+                { "server" }
+        )
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+        callback = function(args)
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+                if client == nil then
+                        return
+                end
+                if client.name == 'ruff' then
+                        -- Disable hover in favor of Pyright
+                        client.server_capabilities.hoverProvider = false
+                end
+        end,
+        desc = 'LSP: Disable hover capability from Ruff',
 })
 
 

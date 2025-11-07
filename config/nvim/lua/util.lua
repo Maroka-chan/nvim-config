@@ -50,9 +50,8 @@ function M.cmd_with_fallback(bin, fallback_bin, args)
                 return vim.list_extend({ path }, args or {})
         end
         -- Otherwise: nix run + bin + args
-        local fallback = { "nix", "run", fallback_bin }
+        local fallback = { "nix", "shell", fallback_bin, "-c", bin }
         if args and #args > 0 then
-                table.insert(fallback, "--")
                 vim.list_extend(fallback, args)
         end
         return fallback

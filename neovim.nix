@@ -6,28 +6,19 @@
   vimPlugins,
   pkgs,
   lib,
+  colorschemePackage ? pkgs.vimPlugins.vague-nvim,
+  colorschemeName ? "vague",
 }:
 let
   packageName = "monica";
 
-  vague = pkgs.vimUtils.buildVimPlugin {
-    name = "vague.nvim";
-    src = pkgs.fetchFromGitHub {
-      owner = "vague2k";
-      repo = "vague.nvim";
-      rev = "v1.4.1";
-      hash = "sha256-isROQFePz8ofJg0qa3Avbwh4Ml4p9Ii2d+VAAkbeGO8=";
-    };
-  };
-
   startPlugins = with vimPlugins; [
-    vague
+    colorschemePackage
     nvim-lspconfig
     snacks-nvim
     lualine-nvim
     ultimate-autopair-nvim
     nvim-web-devicons
-    yazi-nvim
     luasnip
     friendly-snippets
     blink-cmp
@@ -82,6 +73,8 @@ symlinkJoin {
       --suffix PATH : ${runtimePath} \
       --add-flags '--cmd' \
       --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
+      --add-flags '--cmd' \
+      --add-flags "'colorscheme ${colorschemeName}'" \
       --set-default NVIM_APPNAME nvim-custom
   '';
 

@@ -50,9 +50,14 @@
           )
         );
     in
-    {
+    rec {
       packages = forAllSystems (pkgs: {
         default = pkgs.callPackage ./neovim.nix { };
       });
+
+      nixosModules = rec {
+        custom-neovim = import ./module.nix packages;
+        default = custom-neovim;
+      };
     };
 }

@@ -17,15 +17,12 @@ vim.o.colorcolumn        = "80"
 vim.o.updatetime         = 250
 vim.o.splitright         = true
 
-vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")
 
 require "guess-indent".setup({})
 require "fidget".setup({})
 require "lualine".setup({})
 require "luasnip.loaders.from_vscode".lazy_load()
-local yazi = require "yazi"
-yazi.setup({ open_for_directories = true })
 
 vim.api.nvim_set_hl(0, 'SnacksIndent', { fg = "#2b2b2d" })
 vim.api.nvim_set_hl(0, 'SnacksIndent1', { fg = "#646469" })

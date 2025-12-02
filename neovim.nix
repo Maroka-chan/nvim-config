@@ -30,6 +30,7 @@ let
     img-clip-nvim
     render-markdown-nvim
     codecompanion-nvim
+    markdown-preview-nvim
   ];
 
   foldPlugins = builtins.foldl' (

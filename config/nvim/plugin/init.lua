@@ -315,6 +315,7 @@ vim.api.nvim_create_autocmd("User", {
 
 local codecompanion = require("codecompanion")
 codecompanion.setup({
+        ignore_warnings = true,
         strategies = {
                 chat = {
                         adapter = {

@@ -189,7 +189,7 @@ local nixd_settings = deep_merge(
                 "nixd",
                 "formatting",
                 "command"
-        }, { "nix", "run", "nixpkgs#nixfmt" })
+        }, { "nix", "run", "nixpkgs#alejandra" })
 )
 vim.lsp.config('nixd', {
         cmd = cmd_with_fallback(

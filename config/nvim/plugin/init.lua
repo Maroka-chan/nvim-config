@@ -47,7 +47,7 @@ snacks.setup({
                         hl = "SnacksIndent1",
                 },
                 animate = { enabled = false }
-        }
+        },
 })
 local picker = snacks.picker
 local picker_config = ntable({ "win", "input", "keys" })
@@ -412,6 +412,7 @@ local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
         { "<leader>e",  function() snacks.explorer.open({ auto_close = true }) end,         desc = "Explore files" },
+        { "<leader>lg", function() snacks.lazygit() end,                                    desc = "Lazygit" },
         { "<leader>f",  function() picker.files(picker_config) end,                         desc = "Find files" },
         { "<leader>g",  function() picker.grep(picker_config) end,                          desc = "Live Grep" },
         { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
@@ -419,7 +420,11 @@ wk.add({
         { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
         { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
-        { "gd",         vim.lsp.buf.definition,                                             desc = "Goto definition" },
+        { "gd",         function() picker.lsp_definitions(picker_config) end,               desc = "Goto Definition" },
+        { "gD",         function() picker.lsp_declarations(picker_config) end,              desc = "Goto Declaration" },
+        { "gr",         function() picker.lsp_references(picker_config) end,                desc = "References",                nowait = true, },
+        { "gI",         function() picker.lsp_implementations(picker_config) end,           desc = "Goto Implementation" },
+        { "gt",         function() picker.lsp_type_definitions(picker_config) end,          desc = "Goto T[y]pe Definition" },
         { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
         { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto previous diagnostics" },
 })

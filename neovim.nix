@@ -8,8 +8,7 @@
   lib,
   colorschemePackage ? pkgs.vimPlugins.vague-nvim,
   colorschemeName ? "vague",
-}:
-let
+}: let
   packageName = "monica";
 
   startPlugins = with vimPlugins; [
@@ -35,51 +34,52 @@ let
 
   foldPlugins = builtins.foldl' (
     acc: next:
-    acc
-    ++ [
-      next
-    ]
-    ++ (foldPlugins (next.dependencies or [ ]))
-  ) [ ];
+      acc
+      ++ [
+        next
+      ]
+      ++ (foldPlugins (next.dependencies or []))
+  ) [];
 
   startPluginsWithDeps = lib.unique (foldPlugins startPlugins);
 
-  packpath = runCommandLocal "packpath" { } ''
+  packpath = runCommandLocal "packpath" {} ''
     mkdir -p $out/pack/${packageName}/{start,opt}
 
     ln -vsfT ${./config/nvim} $out/pack/${packageName}/start/${packageName}-nvim
 
     ${lib.concatMapStringsSep "\n" (
-      plugin: "ln -vsfT ${plugin} $out/pack/${packageName}/start/${lib.getName plugin}"
-    ) startPluginsWithDeps}
+        plugin: "ln -vsfT ${plugin} $out/pack/${packageName}/start/${lib.getName plugin}"
+      )
+      startPluginsWithDeps}
   '';
 
   runtimePath = lib.makeBinPath (
-    with pkgs;
-    [
+    with pkgs; [
       fd
       ripgrep
       curl
       coreutils
       nodejs
+      lazygit
     ]
   );
 in
-symlinkJoin {
-  name = "nvim";
-  paths = [ neovim-unwrapped ];
-  nativeBuildInputs = [ makeWrapper ];
-  postBuild = ''
-    wrapProgram $out/bin/nvim \
-      --suffix PATH : ${runtimePath} \
-      --add-flags '--cmd' \
-      --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
-      --add-flags '--cmd' \
-      --add-flags "'colorscheme ${colorschemeName}'" \
-      --set-default NVIM_APPNAME nvim-custom
-  '';
+  symlinkJoin {
+    name = "nvim";
+    paths = [neovim-unwrapped];
+    nativeBuildInputs = [makeWrapper];
+    postBuild = ''
+      wrapProgram $out/bin/nvim \
+        --suffix PATH : ${runtimePath} \
+        --add-flags '--cmd' \
+        --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
+        --add-flags '--cmd' \
+        --add-flags "'colorscheme ${colorschemeName}'" \
+        --set-default NVIM_APPNAME nvim-custom
+    '';
 
-  passthru = {
-    inherit packpath;
-  };
-}
+    passthru = {
+      inherit packpath;
+    };
+  }

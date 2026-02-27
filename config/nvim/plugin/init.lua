@@ -417,13 +417,13 @@ wk.add({
         { "<leader>g",  function() picker.grep(picker_config) end,                          desc = "Live Grep" },
         { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
         { "<leader>p",  function() picker.projects(picker_config) end,                      desc = "List Projects" },
+        { "<leader>r",  function() picker.lsp_references(picker_config) end,                desc = "Show references" },
         { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
         { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
         { "gd",         vim.lsp.buf.definition,                                             desc = "Goto definition" },
         { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
         { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto previous diagnostics" },
-        { "sr",         function() picker.lsp_references(picker_config) end,                desc = "Show references" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

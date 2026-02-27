@@ -47,7 +47,7 @@ snacks.setup({
                         hl = "SnacksIndent1",
                 },
                 animate = { enabled = false }
-        }
+        },
 })
 local picker = snacks.picker
 local picker_config = ntable({ "win", "input", "keys" })
@@ -412,6 +412,7 @@ local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
         { "<leader>e",  function() snacks.explorer.open({ auto_close = true }) end,         desc = "Explore files" },
+        { "<leader>lg", function() snacks.lazygit() end,                                    desc = "Lazygit" },
         { "<leader>f",  function() picker.files(picker_config) end,                         desc = "Find files" },
         { "<leader>g",  function() picker.grep(picker_config) end,                          desc = "Live Grep" },
         { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
@@ -422,6 +423,7 @@ wk.add({
         { "gd",         vim.lsp.buf.definition,                                             desc = "Goto definition" },
         { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
         { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto previous diagnostics" },
+        { "sr",         function() picker.lsp_references(picker_config) end,                desc = "Show references" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

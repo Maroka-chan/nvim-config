@@ -422,7 +422,7 @@ wk.add({
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
         { "gd",         function() picker.lsp_definitions(picker_config) end,               desc = "Goto Definition" },
         { "gD",         function() picker.lsp_declarations(picker_config) end,              desc = "Goto Declaration" },
-        { "gr",         function() picker.lsp_references(picker_config) end,                nowait = true,                      desc = "References" },
+        { "gr",         function() picker.lsp_references(picker_config) end,                desc = "References",                nowait = true, },
         { "gI",         function() picker.lsp_implementations(picker_config) end,           desc = "Goto Implementation" },
         { "gt",         function() picker.lsp_type_definitions(picker_config) end,          desc = "Goto T[y]pe Definition" },
         { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },

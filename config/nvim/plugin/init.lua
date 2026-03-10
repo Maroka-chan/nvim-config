@@ -21,7 +21,14 @@ vim.cmd(":hi statusline guibg=NONE")
 
 require "guess-indent".setup({})
 require "fidget".setup({})
-require "lualine".setup({})
+require "lualine".setup({
+        options = {
+                disabled_filetypes = {
+                        statusline = { 'AgenticChat', 'AgenticInput', 'AgenticCode', 'AgenticFiles', 'AgenticDiagnostics' },
+                        winbar = { 'AgenticChat', 'AgenticInput', 'AgenticCode', 'AgenticFiles', 'AgenticDiagnostics' },
+                }
+        }
+})
 require "luasnip.loaders.from_vscode".lazy_load()
 
 vim.api.nvim_set_hl(0, 'SnacksIndent', { fg = "#2b2b2d" })
@@ -77,6 +84,9 @@ blink.setup({
                 ['<CR>'] = { 'accept', 'fallback' },
         },
         snippets = { preset = 'luasnip' },
+        enabled = function()
+                return not vim.tbl_contains({ "AgenticInput" }, vim.bo.filetype)
+        end,
 })
 
 
@@ -297,6 +307,20 @@ copilot.setup({
                         next = "<C-.>",
                 },
         },
+        -- Override should_attach to allow copilot in AgenticInput buffers
+        -- AgenticInput uses buftype = "nofile" which copilot.lua rejects by default
+        should_attach = function(bufnr, bufname)
+                local filetype = vim.bo[bufnr].filetype
+
+                if filetype == "AgenticInput" then
+                        return true
+                end
+
+                -- Delegate to default behavior for all other buffers
+                local default_should_attach =
+                    require("copilot.config.should_attach").default
+                return default_should_attach(bufnr, bufname)
+        end,
 })
 
 vim.api.nvim_create_autocmd("User", {
@@ -313,96 +337,19 @@ vim.api.nvim_create_autocmd("User", {
         end,
 })
 
-local codecompanion = require("codecompanion")
-codecompanion.setup({
-        ignore_warnings = true,
-        strategies = {
-                chat = {
-                        adapter = {
-                                name = "copilot",
-                                model = "claude-sonnet-4",
-                        },
-                        keymaps = {
-                                send = {
-                                        modes = { i = "<CR>" },
-                                        opts = {},
-                                },
-                                close = {
-                                        modes = { n = "<Esc>" },
-                                        opts = {},
-                                },
-                                -- Add further custom keymaps here
-                        },
-                },
-                inline = {
-                        adapter = {
-                                name = "copilot",
-                                model = "claude-sonnet-4",
-                        },
-                        keymaps = {
-                                accept_change = {
-                                        modes = { n = "<leader>aa" },
-                                        description = "Accept the suggested change",
-                                },
-                                reject_change = {
-                                        modes = { n = "<leader>ar" },
-                                        opts = { nowait = true },
-                                        description = "Reject the suggested change",
-                                },
-                        },
-                },
-        },
-        display = {
-                chat = {
-                        window = {
-                                width = 0.3,
-                        },
-                },
+local agentic = require("agentic")
+agentic.setup({
+        provider = "opencode-acp",
+        diff_preview = {
+                enabled = true,
+                layout = "inline", -- "split" or "inline"
+                center_on_navigate_hunks = true,
         },
 })
 
 require("render-markdown").setup({
-        file_types = { "markdown", "codecompanion" },
-        render_modes = true,     -- Render in ALL modes
-        sign = {
-                enabled = false, -- Turn off in the status column
-        },
-        latex = { enabled = false },
-        overrides = {
-                filetype = {
-                        codecompanion = {
-                                html = {
-                                        tag = {
-                                                buf = { icon = " ", highlight = "CodeCompanionChatIcon" },
-                                                file = { icon = " ", highlight = "CodeCompanionChatIcon" },
-                                                group = { icon = " ", highlight = "CodeCompanionChatIcon" },
-                                                help = { icon = "󰘥 ", highlight = "CodeCompanionChatIcon" },
-                                                image = { icon = " ", highlight = "CodeCompanionChatIcon" },
-                                                symbols = { icon = " ", highlight = "CodeCompanionChatIcon" },
-                                                tool = { icon = "󰯠 ", highlight = "CodeCompanionChatIcon" },
-                                                url = { icon = "󰌹 ", highlight = "CodeCompanionChatIcon" },
-                                        },
-                                },
-                        },
-                },
-        },
+        file_types = { "markdown", "md", "AgenticChat" },
 })
-
-local diff = require("mini.diff")
-diff.setup({
-        source = diff.gen_source.none(),
-})
-
-require("img-clip").setup({
-        filetypes = {
-                codecompanion = {
-                        prompt_for_file_name = false,
-                        template = "[Image]($FILE_PATH)",
-                        use_absolute_path = true,
-                },
-        },
-})
-
 
 
 --  █▄▀ ██▀ ▀▄▀ █▄ ▄█ ▄▀▄ █▀▄ ▄▀▀
@@ -418,13 +365,14 @@ wk.add({
         { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
         { "<leader>p",  function() picker.projects(picker_config) end,                      desc = "List Projects" },
         { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
-        { "<leader>ac", function() codecompanion.chat() end,                                desc = "Open AI Chat" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
+        { "<leader>ac", agentic.toggle,                                                     desc = "Toggle Agentic Chat" },
         { "gd",         function() picker.lsp_definitions(picker_config) end,               desc = "Goto Definition" },
         { "gD",         function() picker.lsp_declarations(picker_config) end,              desc = "Goto Declaration" },
         { "gr",         function() picker.lsp_references(picker_config) end,                desc = "References",                nowait = true, },
         { "gI",         function() picker.lsp_implementations(picker_config) end,           desc = "Goto Implementation" },
         { "gt",         function() picker.lsp_type_definitions(picker_config) end,          desc = "Goto T[y]pe Definition" },
+        { "lr",         vim.lsp.buf.rename,                                                 desc = "LSP Rename" },
         { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
         { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto previous diagnostics" },
 })

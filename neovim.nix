@@ -107,6 +107,13 @@
     "$schema" = "https://opencode.ai/config.json";
     permission = {
       "*" = "ask";
+      list = "allow";
+      glob = "allow";
+      grep = "allow";
+      read = "allow";
+      external_directory = {
+        "*" = "deny";
+      };
       #bash = "allow";
       #edit = "deny";
     };

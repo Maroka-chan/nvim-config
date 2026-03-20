@@ -17,7 +17,7 @@
       owner = "carlos-algms";
       repo = "agentic.nvim";
       rev = "main";
-      hash = "sha256-HoXl/5Kjs5AADKWJPhAHXuHW04Q1MWn6yg3/hTRGBV4=";
+      hash = "sha256-HPmlmbHeHyY+k0bqCq5GXkdQXW8h1iNRV6dO673i2AU=";
     };
     nvimSkipModules = [
       "agentic.session_manager.test"
@@ -46,6 +46,7 @@
       "agentic.acp.agent_modes.test"
       "agentic.acp.agent_config_options.test"
       "agentic.acp.agent_models.test"
+      "agentic.config_selector.test"
     ];
   };
 

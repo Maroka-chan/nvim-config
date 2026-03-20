@@ -367,6 +367,7 @@ wk.add({
         { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
         { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
         { "<leader>ac", agentic.toggle,                                                     desc = "Toggle Agentic Chat" },
+        { "<leader>ss", function() picker.lsp_symbols(picker_config) end,                   desc = "List all lsp_symbols" },
         { "gd",         function() picker.lsp_definitions(picker_config) end,               desc = "Goto Definition" },
         { "gD",         function() picker.lsp_declarations(picker_config) end,              desc = "Goto Declaration" },
         { "gr",         function() picker.lsp_references(picker_config) end,                desc = "References",                nowait = true, },

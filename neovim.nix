@@ -16,8 +16,8 @@
     src = pkgs.fetchFromGitHub {
       owner = "carlos-algms";
       repo = "agentic.nvim";
-      rev = "main";
-      hash = "sha256-HPmlmbHeHyY+k0bqCq5GXkdQXW8h1iNRV6dO673i2AU=";
+      rev = "4813e54e8310b3a917d4b094d016b200b27e6d3a";
+      hash = "sha256-mnTrph9JMbMVhI6MyCrgUB31TYQQMgx+8RNnfgC6JS4=";
     };
     nvimSkipModules = [
       "agentic.session_manager.test"

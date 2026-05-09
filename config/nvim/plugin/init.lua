@@ -236,6 +236,14 @@ vim.lsp.config('ruff', {
         )
 })
 
+vim.lsp.enable('gopls')
+vim.lsp.config('gopls', {
+        cmd = cmd_with_fallback(
+                "gopls",
+                "nixpkgs#gopls"
+        )
+})
+
 vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
         callback = function(args)

@@ -218,20 +218,20 @@ vim.lsp.config('dartls', {
         )
 })
 
-vim.lsp.enable('basedpyright')
-vim.lsp.config('basedpyright', {
-        cmd = cmd_with_fallback(
-                "basedpyright-langserver",
-                "nixpkgs#basedpyright",
-                { "--stdio" }
-        )
-})
-
 vim.lsp.enable('ruff')
 vim.lsp.config('ruff', {
         cmd = cmd_with_fallback(
                 "ruff",
                 "nixpkgs#ruff",
+                { "server" }
+        )
+})
+
+vim.lsp.enable('ty')
+vim.lsp.config('ty', {
+        cmd = cmd_with_fallback(
+                "ty",
+                "nixpkgs#ty",
                 { "server" }
         )
 })

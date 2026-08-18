@@ -63,7 +63,6 @@
     fidget-nvim
     which-key-nvim
     guess-indent-nvim
-    copilot-lua
     markdown-preview-nvim
     agentic-nvim
     render-markdown-nvim
@@ -118,8 +117,6 @@
       #bash = "allow";
       #edit = "deny";
     };
-    provider.github-copilot = {};
-    model = "github-copilot/claude-opus-4.6";
     #small_model = "anthropic/claude-haiku-4-5";
   };
 in

@@ -11,45 +11,6 @@
 }: let
   packageName = "monica";
 
-  agentic-nvim = pkgs.vimUtils.buildVimPlugin {
-    name = "agentic.nvim";
-    src = pkgs.fetchFromGitHub {
-      owner = "carlos-algms";
-      repo = "agentic.nvim";
-      rev = "4813e54e8310b3a917d4b094d016b200b27e6d3a";
-      hash = "sha256-mnTrph9JMbMVhI6MyCrgUB31TYQQMgx+8RNnfgC6JS4=";
-    };
-    nvimSkipModules = [
-      "agentic.session_manager.test"
-      "agentic.acp.slash_commands.test"
-      "agentic.session_registry.test"
-      "agentic.session_restore.test"
-      "agentic.ui.chat_history.test"
-      "agentic.ui.chat_widget.test"
-      "agentic.ui.code_selection.test"
-      "agentic.ui.diagnostics_context.test"
-      "agentic.ui.diagnostics_list.test"
-      "agentic.ui.diff_preview.test"
-      "agentic.ui.diff_split_view.test"
-      "agentic.ui.file_list.test"
-      "agentic.ui.file_picker.test"
-      "agentic.ui.hunk_navigation.test"
-      "agentic.ui.message_writer.test"
-      "agentic.ui.permission_manager.test"
-      "agentic.ui.todo_list.test"
-      "agentic.ui.tool_call_diff.test"
-      "agentic.ui.widget_layout.test"
-      "agentic.utils.buf_helpers.test"
-      "agentic.utils.diff_highlighter.test"
-      "agentic.utils.object.test"
-      "agentic.utils.text_matcher.test"
-      "agentic.acp.agent_modes.test"
-      "agentic.acp.agent_config_options.test"
-      "agentic.acp.agent_models.test"
-      "agentic.config_selector.test"
-    ];
-  };
-
   startPlugins = with vimPlugins; [
     colorschemePackage
     nvim-lspconfig
@@ -64,7 +25,6 @@
     which-key-nvim
     guess-indent-nvim
     markdown-preview-nvim
-    agentic-nvim
     render-markdown-nvim
     img-clip-nvim
   ];
@@ -102,23 +62,6 @@
       opencode
     ]
   );
-
-  opencode_config = pkgs.writers.writeJSON "opencode.json" {
-    "$schema" = "https://opencode.ai/config.json";
-    permission = {
-      "*" = "ask";
-      list = "allow";
-      glob = "allow";
-      grep = "allow";
-      read = "allow";
-      external_directory = {
-        "*" = "deny";
-      };
-      #bash = "allow";
-      #edit = "deny";
-    };
-    #small_model = "anthropic/claude-haiku-4-5";
-  };
 in
   symlinkJoin {
     name = "nvim";
@@ -131,8 +74,7 @@ in
         --add-flags "'set packpath^=${packpath} | set runtimepath^=${packpath}'" \
         --add-flags '--cmd' \
         --add-flags "'colorscheme ${colorschemeName}'" \
-        --set-default NVIM_APPNAME nvim-custom \
-        --set OPENCODE_CONFIG ${opencode_config}
+        --set-default NVIM_APPNAME nvim-custom
     '';
 
     passthru = {

@@ -21,14 +21,7 @@ vim.cmd(":hi statusline guibg=NONE")
 
 require "guess-indent".setup({})
 require "fidget".setup({})
-require "lualine".setup({
-        options = {
-                disabled_filetypes = {
-                        statusline = { 'AgenticChat', 'AgenticInput', 'AgenticCode', 'AgenticFiles', 'AgenticDiagnostics' },
-                        winbar = { 'AgenticChat', 'AgenticInput', 'AgenticCode', 'AgenticFiles', 'AgenticDiagnostics' },
-                }
-        }
-})
+require "lualine".setup({})
 require "luasnip.loaders.from_vscode".lazy_load()
 
 vim.api.nvim_set_hl(0, 'SnacksIndent', { fg = "#2b2b2d" })
@@ -84,9 +77,6 @@ blink.setup({
                 ['<CR>'] = { 'accept', 'fallback' },
         },
         snippets = { preset = 'luasnip' },
-        enabled = function()
-                return not vim.tbl_contains({ "AgenticInput" }, vim.bo.filetype)
-        end,
 })
 
 
@@ -300,21 +290,8 @@ function ToggleTerm()
         end
 end
 
---  ▄▀▄ █
---  █▀█ █
-
-local agentic = require("agentic")
-agentic.setup({
-        provider = "opencode-acp",
-        diff_preview = {
-                enabled = true,
-                layout = "inline", -- "split" or "inline"
-                center_on_navigate_hunks = true,
-        },
-})
-
 require("render-markdown").setup({
-        file_types = { "markdown", "md", "AgenticChat" },
+        file_types = { "markdown", "md" },
 })
 
 
@@ -331,7 +308,6 @@ wk.add({
         { "<leader>b",  function() picker.buffers(picker_config) end,                     desc = "List Buffers" },
         { "<leader>p",  function() picker.projects(picker_config) end,                    desc = "List Projects" },
         { "<leader>t",  ToggleTerm,                                                       desc = "Open terminal" },
-        { "<leader>ac", agentic.toggle,                                                   desc = "Toggle Agentic Chat" },
         { "<leader>ss", function() picker.lsp_symbols(picker_config) end,                 desc = "List all lsp_symbols" },
         { "gd",         function() picker.lsp_definitions(picker_config) end,             desc = "Goto Definition" },
         { "gD",         function() picker.lsp_declarations(picker_config) end,            desc = "Goto Declaration" },

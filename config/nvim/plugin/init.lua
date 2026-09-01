@@ -303,48 +303,6 @@ end
 --  ▄▀▄ █
 --  █▀█ █
 
-local copilot = require("copilot")
-copilot.setup({
-        panel = { enabled = false },
-        suggestion = {
-                auto_trigger = false, -- Suggest as we start typing
-                keymap = {
-                        accept_line = "<C-l>",
-                        accept = "<C-CR>",
-                        prev = "<C-,>",
-                        next = "<C-.>",
-                },
-        },
-        -- Override should_attach to allow copilot in AgenticInput buffers
-        -- AgenticInput uses buftype = "nofile" which copilot.lua rejects by default
-        should_attach = function(bufnr, bufname)
-                local filetype = vim.bo[bufnr].filetype
-
-                if filetype == "AgenticInput" then
-                        return true
-                end
-
-                -- Delegate to default behavior for all other buffers
-                local default_should_attach =
-                    require("copilot.config.should_attach").default
-                return default_should_attach(bufnr, bufname)
-        end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-        pattern = "BlinkCmpMenuOpen",
-        callback = function()
-                vim.b.copilot_suggestion_hidden = true
-        end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-        pattern = "BlinkCmpMenuClose",
-        callback = function()
-                vim.b.copilot_suggestion_hidden = false
-        end,
-})
-
 local agentic = require("agentic")
 agentic.setup({
         provider = "opencode-acp",
@@ -366,24 +324,23 @@ require("render-markdown").setup({
 local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
-        { "<leader>e",  function() snacks.explorer.open({ auto_close = true }) end,         desc = "Explore files" },
-        { "<leader>lg", function() snacks.lazygit() end,                                    desc = "Lazygit" },
-        { "<leader>f",  function() picker.files(picker_config) end,                         desc = "Find files" },
-        { "<leader>g",  function() picker.grep(picker_config) end,                          desc = "Live Grep" },
-        { "<leader>b",  function() picker.buffers(picker_config) end,                       desc = "List Buffers" },
-        { "<leader>p",  function() picker.projects(picker_config) end,                      desc = "List Projects" },
-        { "<leader>t",  ToggleTerm,                                                         desc = "Open terminal" },
-        { "<leader>as", function() require("copilot.suggestion").toggle_auto_trigger() end, desc = "Toggle Copilot Suggestions" },
-        { "<leader>ac", agentic.toggle,                                                     desc = "Toggle Agentic Chat" },
-        { "<leader>ss", function() picker.lsp_symbols(picker_config) end,                   desc = "List all lsp_symbols" },
-        { "gd",         function() picker.lsp_definitions(picker_config) end,               desc = "Goto Definition" },
-        { "gD",         function() picker.lsp_declarations(picker_config) end,              desc = "Goto Declaration" },
-        { "gr",         function() picker.lsp_references(picker_config) end,                desc = "References",                nowait = true, },
-        { "gI",         function() picker.lsp_implementations(picker_config) end,           desc = "Goto Implementation" },
-        { "gt",         function() picker.lsp_type_definitions(picker_config) end,          desc = "Goto T[y]pe Definition" },
-        { "lr",         vim.lsp.buf.rename,                                                 desc = "LSP Rename" },
-        { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,    desc = "Goto next diagnostics" },
-        { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end,   desc = "Goto previous diagnostics" },
+        { "<leader>e",  function() snacks.explorer.open({ auto_close = true }) end,       desc = "Explore files" },
+        { "<leader>lg", function() snacks.lazygit() end,                                  desc = "Lazygit" },
+        { "<leader>f",  function() picker.files(picker_config) end,                       desc = "Find files" },
+        { "<leader>g",  function() picker.grep(picker_config) end,                        desc = "Live Grep" },
+        { "<leader>b",  function() picker.buffers(picker_config) end,                     desc = "List Buffers" },
+        { "<leader>p",  function() picker.projects(picker_config) end,                    desc = "List Projects" },
+        { "<leader>t",  ToggleTerm,                                                       desc = "Open terminal" },
+        { "<leader>ac", agentic.toggle,                                                   desc = "Toggle Agentic Chat" },
+        { "<leader>ss", function() picker.lsp_symbols(picker_config) end,                 desc = "List all lsp_symbols" },
+        { "gd",         function() picker.lsp_definitions(picker_config) end,             desc = "Goto Definition" },
+        { "gD",         function() picker.lsp_declarations(picker_config) end,            desc = "Goto Declaration" },
+        { "gr",         function() picker.lsp_references(picker_config) end,              desc = "References",               nowait = true, },
+        { "gI",         function() picker.lsp_implementations(picker_config) end,         desc = "Goto Implementation" },
+        { "gt",         function() picker.lsp_type_definitions(picker_config) end,        desc = "Goto T[y]pe Definition" },
+        { "lr",         vim.lsp.buf.rename,                                               desc = "LSP Rename" },
+        { "dn",         function() vim.diagnostic.jump({ count = 1, float = true }) end,  desc = "Goto next diagnostics" },
+        { "dp",         function() vim.diagnostic.jump({ count = -1, float = true }) end, desc = "Goto previous diagnostics" },
 })
 vim.keymap.set('t', '<Esc>', ToggleTerm)
 

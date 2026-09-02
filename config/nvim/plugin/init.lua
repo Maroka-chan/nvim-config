@@ -100,6 +100,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 
 vim.lsp.config('*', { capabilities = blink.get_lsp_capabilities() })
+vim.lsp.enable('gh_actions_ls')
+vim.lsp.config('gh_actions_ls', {
+        cmd = { "npx", "-y", "gh-actions-language-server", "--stdio" }
+})
 
 vim.lsp.enable('bashls')
 vim.lsp.config('bashls', {

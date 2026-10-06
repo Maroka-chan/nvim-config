@@ -11,6 +11,18 @@
 }: let
   packageName = "monica";
 
+  github-actions-yaml-vim = pkgs.vimUtils.buildVimPlugin {
+    pname = "github-actions-yaml.vim";
+    version = "1.0.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "yasuhiroki";
+      repo = "github-actions-yaml.vim";
+      rev = "728374ef59b11a5f5991ea2560d149a4ae33fd22";
+      hash = "sha256-bqJ37bKW+EcEsY/Q0pWp/jp4GleibeBWw47AQfWXYIM=";
+    };
+    meta.homepage = "https://github.com/yasuhiroki/github-actions-yaml.vim";
+  };
+
   startPlugins = with vimPlugins; [
     colorschemePackage
     nvim-lspconfig
@@ -27,6 +39,7 @@
     markdown-preview-nvim
     render-markdown-nvim
     img-clip-nvim
+    github-actions-yaml-vim
   ];
 
   foldPlugins = builtins.foldl' (

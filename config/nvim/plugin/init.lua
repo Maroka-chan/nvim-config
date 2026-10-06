@@ -234,6 +234,19 @@ vim.lsp.config('gopls', {
         )
 })
 
+vim.lsp.enable('clangd')
+vim.lsp.config('clangd', {
+        cmd = cmd_with_fallback(
+                "clangd",
+                "nixpkgs#clang-tools",
+                {
+                        "--background-index",
+                        -- Allow clangd to query cross-compilers (e.g. Zephyr SDK) for builtin includes
+                        "--query-driver=/nix/store/**/bin/*-zephyr-eabi-g*",
+                }
+        )
+})
+
 vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
         callback = function(args)

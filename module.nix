@@ -53,7 +53,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = [
-      (packages.${pkgs.system}.default.override { inherit (cfg) colorschemePackage colorschemeName; })
+      (packages.${pkgs.stdenv.hostPlatform.system}.default.override { inherit (cfg) colorschemePackage colorschemeName; })
     ];
 
     environment.variables.EDITOR = mkIf cfg.defaultEditor (mkOverride 900 "nvim");
